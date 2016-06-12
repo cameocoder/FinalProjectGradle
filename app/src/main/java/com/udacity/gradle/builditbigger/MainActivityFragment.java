@@ -2,6 +2,7 @@ package com.udacity.gradle.builditbigger;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,9 +10,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 
+import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
+import com.udacity.gradle.Jokes;
 import com.udacity.gradle.jokedisplay.JokeActivity;
 
 
@@ -26,6 +29,24 @@ public class MainActivityFragment extends Fragment {
 
 
     public MainActivityFragment() {
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        mInterstitialAd = new InterstitialAd(getContext());
+        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+
+        mInterstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdClosed() {
+                requestNewInterstitial();
+                launchJokeActivity(joke);
+            }
+        });
+
+        requestNewInterstitial();
     }
 
     @Override
@@ -55,7 +76,11 @@ public class MainActivityFragment extends Fragment {
     }
 
     private void fetchJoke() {
-        launchJokeActivity(joke);
+        if (mInterstitialAd.isLoaded()) {
+            mInterstitialAd.show();
+        } else {
+            launchJokeActivity(joke);
+        }
 
 //        new EndpointsAsyncTask() {
 //
@@ -77,7 +102,7 @@ public class MainActivityFragment extends Fragment {
     }
 
     public void launchJokeActivity(String joke) {
-        joke = "derp.";
+        joke = Jokes.getJoke();
         spinner.setVisibility(View.GONE);
         Intent intent = new Intent(getContext(), JokeActivity.class);
         intent.putExtra(JokeActivity.JOKE_KEY, joke);
@@ -91,6 +116,5 @@ public class MainActivityFragment extends Fragment {
 
         mInterstitialAd.loadAd(adRequest);
     }
-
 
 }
