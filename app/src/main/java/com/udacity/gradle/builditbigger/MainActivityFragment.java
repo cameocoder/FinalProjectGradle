@@ -76,29 +76,29 @@ public class MainActivityFragment extends Fragment {
     }
 
     private void fetchJoke() {
-        if (mInterstitialAd.isLoaded()) {
-            mInterstitialAd.show();
-        } else {
-            launchJokeActivity(joke);
-        }
+//        if (mInterstitialAd.isLoaded()) {
+//            mInterstitialAd.show();
+//        } else {
+//            launchJokeActivity(joke);
+//        }
 
-//        new EndpointsAsyncTask() {
-//
-//            @Override
-//            protected void onPreExecute() {
-//                spinner.setVisibility(View.VISIBLE);
-//            }
-//
-//            @Override
-//            protected void onPostExecute(final String result) {
-//                joke = result;
-//                if (mInterstitialAd.isLoaded()) {
-//                    mInterstitialAd.show();
-//                } else {
-//                    launchJokeActivity(joke);
-//                }
-//            }
-//        }.execute();
+        new EndpointsAsyncTask() {
+
+            @Override
+            protected void onPreExecute() {
+                spinner.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            protected void onPostExecute(final String result) {
+                joke = result;
+                if (mInterstitialAd.isLoaded()) {
+                    mInterstitialAd.show();
+                } else {
+                    launchJokeActivity(joke);
+                }
+            }
+        }.execute();
     }
 
     public void launchJokeActivity(String joke) {
