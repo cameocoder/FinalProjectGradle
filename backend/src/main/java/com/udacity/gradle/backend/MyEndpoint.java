@@ -24,8 +24,8 @@ import com.udacity.gradle.Jokes;
 public class MyEndpoint {
 
     /** A simple endpoint method that takes a name and says Hi back */
-    @ApiMethod(name = "sayHi")
-    public MyBean sayHi() {
+    @ApiMethod(name = "tellJoke")
+    public MyBean tellJoke() {
         MyBean response = new MyBean();
         response.setData(Jokes.getJoke());
 

@@ -47,9 +47,9 @@
                 <p>Enter your name and press the button below to call your Google Cloud Endpoints API.</p>
                 <form>
                     <div class="input-group">
-                        <input type="text" class="form-control input-lg" placeholder="Name" id="nameInput" />
+                        <!--<input type="text" class="form-control input-lg" placeholder="Name" id="nameInput" />-->
                           <span class="input-group-btn">
-                             <button class="btn btn-default btn-primary btn-group btn-lg" type="submit" id="helloButton">Say "Hello" &raquo;</button>
+                             <button class="btn btn-default btn-primary btn-group btn-lg" type="submit" id="helloButton">Get "Joke" &raquo;</button>
                           </span>
                     </div>
                 </form>
@@ -69,8 +69,8 @@
     // A function that attaches a "Say Hello" button click handler
     function enableClick() {
       document.getElementById('helloButton').onclick = function() {
-        var name = document.getElementById('nameInput').value;
-        gapi.client.myApi.sayHi({'name': name}).execute(
+        <!--var name = document.getElementById('nameInput').value;-->
+        gapi.client.myApi.tellJoke().execute(
           function(response) {
             var outputAlertDiv = document.getElementById('outputAlert');
             outputAlertDiv.style.visibility = 'visible';
