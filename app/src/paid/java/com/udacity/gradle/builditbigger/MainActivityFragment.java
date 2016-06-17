@@ -9,11 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
-import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.InterstitialAd;
 import com.udacity.gradle.Jokes;
 import com.udacity.gradle.jokedisplay.JokeActivity;
 
@@ -23,10 +20,8 @@ import com.udacity.gradle.jokedisplay.JokeActivity;
  */
 public class MainActivityFragment extends Fragment {
 
-    private InterstitialAd mInterstitialAd;
     private ProgressBar spinner;
     private String joke;
-
 
     public MainActivityFragment() {
     }
@@ -34,19 +29,6 @@ public class MainActivityFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        mInterstitialAd = new InterstitialAd(getContext());
-        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
-
-        mInterstitialAd.setAdListener(new AdListener() {
-            @Override
-            public void onAdClosed() {
-                requestNewInterstitial();
-                launchJokeActivity(joke);
-            }
-        });
-
-        requestNewInterstitial();
     }
 
     @Override
@@ -62,26 +44,12 @@ public class MainActivityFragment extends Fragment {
             }
         });
 
-        spinner = (ProgressBar)root.findViewById(R.id.progressBar);
+        spinner = (ProgressBar) root.findViewById(R.id.progressBar);
 
-        AdView mAdView = (AdView) root.findViewById(R.id.adView);
-        // Create an ad request. Check logcat output for the hashed device ID to
-        // get test ads on a physical device. e.g.
-        // "Use AdRequest.Builder.addTestDevice("ABCDEF012345") to get test ads on this device."
-        AdRequest adRequest = new AdRequest.Builder()
-                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                .build();
-        mAdView.loadAd(adRequest);
         return root;
     }
 
     private void fetchJoke() {
-//        if (mInterstitialAd.isLoaded()) {
-//            mInterstitialAd.show();
-//        } else {
-//            launchJokeActivity(joke);
-//        }
-
         new EndpointsAsyncTask() {
 
             @Override
@@ -92,29 +60,21 @@ public class MainActivityFragment extends Fragment {
             @Override
             protected void onPostExecute(final String result) {
                 joke = result;
-                if (mInterstitialAd.isLoaded()) {
-                    mInterstitialAd.show();
-                } else {
-                    launchJokeActivity(joke);
-                }
+                launchJokeActivity(joke);
             }
         }.execute();
     }
 
-    public void launchJokeActivity(String joke) {
-        joke = Jokes.getJoke();
+    private void launchJokeActivity(String joke) {
+        if (joke == null || joke.isEmpty()) {
+            Toast.makeText(getContext(), R.string.empty_joke_error, Toast.LENGTH_SHORT).show();
+            joke = Jokes.getJoke();
+        }
         spinner.setVisibility(View.GONE);
         Intent intent = new Intent(getContext(), JokeActivity.class);
         intent.putExtra(JokeActivity.JOKE_KEY, joke);
         startActivity(intent);
     }
 
-    private void requestNewInterstitial() {
-        AdRequest adRequest = new AdRequest.Builder()
-                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                .build();
-
-        mInterstitialAd.loadAd(adRequest);
-    }
 
 }
